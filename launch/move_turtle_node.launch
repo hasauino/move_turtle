@@ -1,0 +1,18 @@
+<!-- only to launch the move_turtle node and set it's parameters -->
+
+
+<launch>
+
+    <node pkg="move_turtle" type="move_turtle.py" name="move_turtle" output="screen">
+        <param name="cmd_vel_topic" value="/turtle1/cmd_vel"/>
+        <param name="pose_topic" value="/turtle1/pose"/>
+        <param name="action_name" value="/move_turtle"/>
+        <param name="robot_max_speed" value="1.5" />
+        <param name="pull_distance" value="0.5" />
+        <param name="controller_gain" value="10" />
+        <param name="plot_enable" value="False" />
+        <param name="path_number_of_points" value="100" />
+        <param name="rate" value="200" />
+    </node>
+  
+</launch>

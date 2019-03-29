@@ -1,0 +1,10 @@
+<!-- Launch turtlesim, move_turtle node, turtle teleop -->
+
+
+<launch>
+
+    <node pkg="turtlesim" type="turtlesim_node" name="turtlesim_node"/>
+    <node pkg="turtlesim" type="turtle_teleop_key" name="turtle_teleop_key"/>
+    <include file="$(find move_turtle)/launch/move_turtle_node.launch"/>
+
+</launch>
