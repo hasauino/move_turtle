@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+import roslib
+import rospy
+import smach
+import smach_ros
+import actionlib
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+
+# define state Red
+class Pos_1(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['pos2'], output_keys=['ID'])
+        self.counter = 0
+        self.client=actionlib.SimpleActionClient('/move_turtle', MoveBaseAction)
+        self.client.wait_for_server()
+        self.goal = MoveBaseGoal()
+
+    def execute(self, userdata):
+        self.goal.target_pose.pose.position.x=7.0
+        self.goal.target_pose.pose.position.y=7.0
+        self.client.send_goal(self.goal)
+        rospy.loginfo('***going to first position***')
+        rospy.sleep(5)
+        userdata.ID = "pos1"
+        return 'pos2'
+           
+
+
+# define state Yellow
+class Pos_2(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['pos3', 'pos1'],
+                                 input_keys=['prev_ID'])
+        self.counter = 0
+        self.client=actionlib.SimpleActionClient('/move_turtle', MoveBaseAction)
+        self.client.wait_for_server()
+        self.goal = MoveBaseGoal()
+
+    def execute(self, userdata):
+        rospy.loginfo('***going to the second position***')
+        self.goal.target_pose.pose.position.x=3.0
+        self.goal.target_pose.pose.position.y=3.0
+        self.client.send_goal(self.goal)
+
+        rospy.sleep(5)
+        if userdata.prev_ID == "pos1":
+            return 'pos3'
+        if userdata.prev_ID == "pos3":
+            return 'pos1'            
+
+#define state green
+class Pos_3(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['pos2'], output_keys=['ID'])
+        self.counter = 0
+        self.client=actionlib.SimpleActionClient('/move_turtle', MoveBaseAction)
+        self.client.wait_for_server()
+        self.goal = MoveBaseGoal()
+        self.client=actionlib.SimpleActionClient('/move_turtle', MoveBaseAction)
+        self.client.wait_for_server()
+        self.goal = MoveBaseGoal()
+
+    def execute(self, userdata):
+        self.goal.target_pose.pose.position.x=2.0
+        self.goal.target_pose.pose.position.y=7.0
+        self.client.send_goal(self.goal)        
+        rospy.loginfo('***going to third position***')
+        rospy.sleep(5)
+        userdata.ID = "pos3"
+        return 'pos2'
+        
+
+def main():
+    rospy.init_node('turtle_loop')
+
+    # flag=0
+    # Create a SMACH state machine
+    sm = smach.StateMachine(outcomes=['DONE'])
+
+    # Open the container
+    with sm:
+        # Add states to the container
+        smach.StateMachine.add('pos1', Pos_1(),
+                               transitions={'pos2':'pos2'},
+                               remapping={'ID':'prev_ID'})
+
+        smach.StateMachine.add('pos3', Pos_3(),
+                               transitions={'pos2':'pos2'},
+                               remapping={'ID':'prev_ID'})
+
+        smach.StateMachine.add('pos2', Pos_2(),
+                               transitions={'pos1':'pos1',
+                                            'pos3':'pos3'})
+    # Execute SMACH plan
+    outcome = sm.execute()
+
+
+if __name__ == '__main__':
+    main()
