@@ -13,3 +13,13 @@ roslaunch move_turtle all.launch
 ```
 roslaunch move_turtle move_turtle_node.launch
 ```
+
+# Smach Example
+After running all the nodes (```all.launch```), run the ```smach_example``` node:
+```
+rosrun move_turtle smach_example 
+```
+
+# Video
+
+[Youtubevideo here](https://www.youtube.com/watch?v=vQmRY5bl4VI&feature=youtu.be)
