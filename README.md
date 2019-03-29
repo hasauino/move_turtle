@@ -22,4 +22,4 @@ rosrun move_turtle smach_example
 
 # Video
 
-[Youtubevideo here](https://www.youtube.com/watch?v=vQmRY5bl4VI&feature=youtu.be)
+[Youtube video here](https://www.youtube.com/watch?v=vQmRY5bl4VI&feature=youtu.be)
